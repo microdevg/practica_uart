@@ -41,18 +41,25 @@ void app_main(void)
     uart_set_pin(UART,PIN_TX,PIN_RX,UART_PIN_NO_CHANGE,UART_PIN_NO_CHANGE);
     uart_driver_install(UART,LEN_BUFFER,LEN_BUFFER,0,NULL,ESP_INTR_FLAG_SHARED);
 
-
+    #define KEY_WORD          ("activate")
     #define MSG_COUNTER       ("counter:%u\n")
-    #define LEN     50
+    #define LEN     100
     char buffer[LEN]={0};
     int bytes = 0;
 
     while(1){
 
-       bytes =  uart_read_bytes(UART,buffer,LEN,1000);
+       bytes =  uart_read_bytes(UART,buffer,LEN,250);
        if(bytes >0){
         buffer[bytes]=0;
-        printf("Se recibio el mensaje %s\n",buffer);
+        printf("%s\n",buffer);
+        //procesar el contador:
+        if (strstr(buffer, KEY_WORD) != NULL) {
+        printf("Palabra clave detectada\n");} 
+        else {
+        printf("No se detecto palabra clave\n");
+        }
+        //borramos el buffer utilizado
         memset(buffer,0,bytes);
         bytes=0;
        }

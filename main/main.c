@@ -37,17 +37,22 @@ void app_main(void)
     uart_set_word_length(UART,UART_DATA_8_BITS);
     uart_set_parity(UART,UART_PARITY_DISABLE);
     uart_set_hw_flow_ctrl(UART,UART_HW_FLOWCTRL_DISABLE,0);
+#endif
     uart_set_pin(UART,PIN_TX,PIN_RX,UART_PIN_NO_CHANGE,UART_PIN_NO_CHANGE);
     uart_driver_install(UART,LEN_BUFFER,LEN_BUFFER,0,NULL,ESP_INTR_FLAG_SHARED);
-#endif
+
+
+    #define MSG_COUNTER       ("counter:%u\n")
+    char buffer[50]={0};
+    int counter = 0;
 
     while(1){
+        sprintf(buffer,MSG_COUNTER,counter);
 
-
-        uart_write_bytes(UART,MSG,strlen(MSG));
-        vTaskDelay(500/portTICK_PERIOD_MS);
+        uart_write_bytes(UART,buffer,strlen(buffer));
+        vTaskDelay(1000/portTICK_PERIOD_MS);
         printf(MSG);
-        
+        counter = counter + 1;   // Es lo mismo usar: counter++;   
     }
 
 

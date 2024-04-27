@@ -43,16 +43,20 @@ void app_main(void)
 
 
     #define MSG_COUNTER       ("counter:%u\n")
-    char buffer[50]={0};
-    int counter = 0;
+    #define LEN     50
+    char buffer[LEN]={0};
+    int bytes = 0;
 
     while(1){
-        sprintf(buffer,MSG_COUNTER,counter);
 
-        uart_write_bytes(UART,buffer,strlen(buffer));
-        vTaskDelay(1000/portTICK_PERIOD_MS);
-        printf(MSG);
-        counter = counter + 1;   // Es lo mismo usar: counter++;   
+       bytes =  uart_read_bytes(UART,buffer,LEN,1000);
+       if(bytes >0){
+        buffer[bytes]=0;
+        printf("Se recibio el mensaje %s\n",buffer);
+        memset(buffer,0,bytes);
+        bytes=0;
+       }
+       
     }
 
 
